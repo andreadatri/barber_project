@@ -60,6 +60,10 @@ class FortifyServiceProvider extends ServiceProvider
             'canRegister' => Features::enabled(Features::registration()),
             'status' => $request->session()->get('status'),
         ]));
+
+        Fortify::verifyEmailView(fn (Request $request) => view('pages.admin.auth.verify-email', [
+            'status' => $request->session()->get('status'),
+        ]));
     }
 
     /**
