@@ -98,8 +98,8 @@ export default function AdminDashboard() {
         </div>
 
         <Card className="p-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+            <div className="min-w-0 flex-1">
               <Label className="mb-2 block text-sm text-muted-foreground">
                 Seleziona data
               </Label>
@@ -107,10 +107,10 @@ export default function AdminDashboard() {
                 type="date"
                 value={format(selectedDate, "yyyy-MM-dd")}
                 onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                className="max-w-xs"
+                className="w-full sm:max-w-xs"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -148,8 +148,8 @@ export default function AdminDashboard() {
             ) : (
               dayAppointments.map((appointment) => (
                 <div key={appointment.id} className="p-4 transition-colors hover:bg-muted/50">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex flex-1 items-start gap-4">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="flex min-w-0 flex-1 items-start gap-4">
                       <div className="rounded-lg bg-primary/10 p-2">
                         <Clock className="h-5 w-5 text-primary" />
                       </div>
@@ -178,13 +178,13 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="lg:text-right">
                       <p className="mb-1 font-semibold">{appointment.service.name}</p>
                       <p className="mb-2 text-sm text-muted-foreground">
                         {appointment.service.duration} min • €
                         {appointment.service.price.toFixed(2)}
                       </p>
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-wrap gap-2 lg:justify-end">
                         <Button size="sm" variant="outline">
                           Dettagli
                         </Button>

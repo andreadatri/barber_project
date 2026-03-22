@@ -57,7 +57,7 @@ export function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen overflow-x-hidden bg-muted/30">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -129,38 +129,40 @@ export function AdminLayout({
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="min-w-0 lg:pl-64">
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-background border-b">
           <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-4">
+            <div className="flex min-w-0 items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden"
+                className="shrink-0 lg:hidden"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
               </Button>
               {breadcrumbs && breadcrumbs.length > 0 && (
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    {breadcrumbs.map((crumb, index) => (
-                      <div key={index} className="flex items-center">
-                        {index > 0 && <BreadcrumbSeparator />}
-                        <BreadcrumbItem>
-                          {crumb.href ? (
-                            <BreadcrumbLink href={crumb.href}>
-                              {crumb.label}
-                            </BreadcrumbLink>
-                          ) : (
-                            <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                          )}
-                        </BreadcrumbItem>
-                      </div>
-                    ))}
-                  </BreadcrumbList>
-                </Breadcrumb>
+                <div className="min-w-0 overflow-hidden">
+                  <Breadcrumb>
+                    <BreadcrumbList className="truncate whitespace-nowrap">
+                      {breadcrumbs.map((crumb, index) => (
+                        <div key={index} className="flex items-center">
+                          {index > 0 && <BreadcrumbSeparator />}
+                          <BreadcrumbItem>
+                            {crumb.href ? (
+                              <BreadcrumbLink href={crumb.href}>
+                                {crumb.label}
+                              </BreadcrumbLink>
+                            ) : (
+                              <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                            )}
+                          </BreadcrumbItem>
+                        </div>
+                      ))}
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
               )}
             </div>
           </div>
@@ -169,7 +171,7 @@ export function AdminLayout({
         {/* Page content */}
         <main className="p-4 lg:p-6">
           {title && (
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h1 className="text-2xl font-semibold">{title}</h1>
               {actions && <div className="flex items-center gap-2">{actions}</div>}
             </div>
