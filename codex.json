@@ -1,0 +1,377 @@
+{
+  "idea": "Laravel API + Vue 3 (Vite) + Tailwind (PWA-ready)",
+  "strategy": {
+    "project_goal": "Creare una web app mobile-first (PWA-ready) per un barbiere che consenta ai clienti di prenotare rapidamente scegliendo servizio e fascia oraria, con gestione appuntamenti lato admin e notifiche automatiche.",
+    "business_type": "Local service business (barbiere) con prenotazioni su appuntamento",
+    "execution_path": [
+      {
+        "step": "define_booking_rules",
+        "priority": "high",
+        "description": "Workshop rapido su regole: grana slot (15/30 min), buffer, anticipo minimo, durata per servizio, cancellazione/no-show, timezone, singola postazione vs multi-staff."
+      },
+      {
+        "step": "design_data_model_and_api_contract",
+        "priority": "high",
+        "description": "Modello dati minimo (services, appointments, opening_hours, closures, settings) + endpoint API (availability, create booking, admin CRUD) e validazioni."
+      },
+      {
+        "step": "wireframe_mobile_booking_flow",
+        "priority": "high",
+        "description": "Wireframe low-fi mobile-first del flusso prenotazione e delle schermate admin essenziali; definizione copy e micro-interazioni."
+      },
+      {
+        "step": "setup_repo_ci_env",
+        "priority": "high",
+        "description": "Setup progetto (Laravel + Vue/Vite o scelta alternativa), env, migration, seed, linting, base CI, deploy target (VPS/managed)."
+      },
+      {
+        "step": "implement_availability_engine",
+        "priority": "high",
+        "description": "Implementare generazione slot e prevenzione overbooking (constraint + transaction/locking) + test su casi limite (chiusure, buffer, fine giornata)."
+      },
+      {
+        "step": "build_customer_booking_ui",
+        "priority": "high",
+        "description": "Implementare UI cliente (servizio/data/ora/contatti/conferma), chiamate API, stati di errore, loading, accessibilità base."
+      },
+      {
+        "step": "build_admin_panel_min",
+        "priority": "high",
+        "description": "Auth admin + lista/calendario base + CRUD appuntamenti + gestione chiusure/orari (minimo indispensabile)."
+      },
+      {
+        "step": "notifications_email",
+        "priority": "high",
+        "description": "Integrazione provider email (SMTP/Sendgrid/Mailgun), template, retry/log, notifiche a cliente e barbiere."
+      },
+      {
+        "step": "pwa_baseline",
+        "priority": "medium",
+        "description": "Aggiungere manifest, icone, service worker con caching minimale e strategy semplice; verificare installabilità su iOS/Android."
+      },
+      {
+        "step": "qa_launch_and_tracking",
+        "priority": "high",
+        "description": "QA su dispositivi reali, test carico leggero (concorrenza slot), privacy/cookie banner se necessario, analytics eventi (booking_started/confirmed), go-live."
+      }
+    ],
+    "suggested_mvp_scope": [
+      {
+        "name": "Landing mobile-first + CTA Prenota",
+        "priority": "high",
+        "description": "Pagina pubblica minimale con info essenziali (indirizzo, orari, contatti) e bottone “Prenota ora” che porta al flusso booking."
+      },
+      {
+        "name": "Catalogo servizi con durata/prezzo",
+        "priority": "high",
+        "description": "CRUD servizi (admin) + lista servizi (cliente) con durata usata per calcolo slot e riepilogo."
+      },
+      {
+        "name": "Regole disponibilità (orari, chiusure, buffer)",
+        "priority": "high",
+        "description": "Impostazioni negozio: orari settimanali, chiusure straordinarie, buffer standard tra appuntamenti; generazione slot a grana fissa (es. 15 min) per semplicità MVP."
+      },
+      {
+        "name": "Flusso prenotazione cliente in 3–4 step",
+        "priority": "high",
+        "description": "Servizio → data → ora → contatti (nome + telefono/email) → conferma con riepilogo; prevenzione overbooking con lock/transazione lato backend."
+      },
+      {
+        "name": "Notifiche email (cliente + barbiere)",
+        "priority": "high",
+        "description": "Email di conferma prenotazione e notifica al barbiere; template base e logging invii (senza SMS/WhatsApp in MVP se non richiesto)."
+      },
+      {
+        "name": "Admin auth + lista/calendario appuntamenti (base)",
+        "priority": "high",
+        "description": "Login admin (Sanctum o sessione), vista lista giornaliera/settimanale, dettaglio appuntamento, azioni: crea/modifica/cancella, blocca giornata/slot (minimo)."
+      },
+      {
+        "name": "PWA baseline (installabilità)",
+        "priority": "medium",
+        "description": "Manifest, icone, theme color, caching minimo della UI shell; nessuna prenotazione offline."
+      }
+    ],
+    "questions_to_resolve": [
+      {
+        "reason": "Cambia in modo significativo modello dati, UI e logica di disponibilità.",
+        "priority": "high",
+        "question": "È 1 sola postazione/barbiere o vuoi supportare più barbieri con calendari separati già in MVP?"
+      },
+      {
+        "reason": "Impatta integrazioni, costi ricorrenti e requisiti di consenso/privacy.",
+        "priority": "high",
+        "question": "Quali canali di notifica vuoi in MVP: solo email o anche SMS/WhatsApp?"
+      },
+      {
+        "reason": "Determina sicurezza (token), UI extra e regole (es. fino a X ore prima).",
+        "priority": "high",
+        "question": "Vuoi che il cliente possa cancellare/spostare da solo tramite link (self-service) o gestisci tutto lato admin?"
+      },
+      {
+        "reason": "Serve per definire l’algoritmo di generazione disponibilità senza rework.",
+        "priority": "high",
+        "question": "Ci sono regole specifiche sugli slot? (es. solo ogni 15/30 min, pausa pranzo, buffer diverso per servizio)"
+      },
+      {
+        "reason": "Influisce su UX mobile, privacy/compliance e qualità del contatto per promemoria.",
+        "priority": "medium",
+        "question": "Che dati minimi vuoi raccogliere dal cliente (telefono obbligatorio, email opzionale, note, consenso marketing)?"
+      }
+    ],
+    "recommended_next_step": {
+      "step": "confirm_mvp_booking_rules_and_data_model",
+      "priority": "high",
+      "description": "Confermare regole di prenotazione (durate, buffer, anticipo minimo, cancellazione) e la struttura dati minima (servizi, disponibilità, appuntamenti, chiusure) per sbloccare le schermate principali e le API endpoint dell’MVP."
+    },
+    "recommended_stack_options": [
+      {
+        "cons": [
+          "Più complesso di un monolite: richiede definizione contratti API e gestione CORS/auth",
+          "PWA richiede disciplina su caching/versioning (anche se minimo)",
+          "Tempo iniziale maggiore rispetto a soluzioni CMS/plugin"
+        ],
+        "pros": [
+          "API pulite e riusabili (anche per futura app nativa o integrazioni)",
+          "Ottima DX e scalabilità (job/queue per notifiche, policy/roles, test)",
+          "Vue+Tailwind velocizzano UI mobile e componentizzazione",
+          "PWA baseline semplice (manifest + caching shell) senza complessità offline"
+        ],
+        "best_for": "MVP “app-like” mobile-first con chiara separazione API/UI e strada aperta a evoluzioni (multi-staff, pagamenti, loyalty) senza cambiare architettura.",
+        "option_name": "Laravel 11 (API) + Vue 3 (Vite) + Tailwind + MySQL/PostgreSQL + Sanctum + PWA baseline"
+      },
+      {
+        "cons": [
+          "UX “app-like” meno fluida rispetto a SPA se non curata bene",
+          "Separazione API/UI meno netta (potenziale refactor se si passa a full SPA)",
+          "PWA avanzata e offline-first più scomode in un monolite"
+        ],
+        "pros": [
+          "Time-to-market rapido (meno plumbing API/SPA)",
+          "SEO e performance buone out-of-the-box per pagine vetrina",
+          "Admin e booking nello stesso progetto, deploy semplificato",
+          "Facile evoluzione incrementale: introdurre Vue su booking flow più avanti"
+        ],
+        "best_for": "MVP molto rapido e robusto con un solo codebase server-rendered, mantenendo possibilità di migrare in seguito a Vue/Vite su sezioni specifiche.",
+        "option_name": "Laravel 11 + Blade + Alpine.js + Tailwind (monolite) + PWA lite"
+      },
+      {
+        "cons": [
+          "Rischio di vincoli/limitazioni con plugin booking (custom regole slot/buffer)",
+          "Sicurezza e manutenzione (aggiornamenti core/plugin)",
+          "Scalabilità e pulizia del dominio “booking engine” inferiori rispetto a Laravel-first"
+        ],
+        "pros": [
+          "CMS pronto per contenuti, immagini, SEO locale",
+          "Costo/tempo ridotti per pagine pubbliche e gestione contenuti",
+          "La parte booking può essere isolata (shortcode/route dedicata) e sostituibile in futuro"
+        ],
+        "best_for": "Quando serve anche un sito vetrina gestibile dal barbiere (contenuti, promo, gallery) e vuoi una prenotazione snella integrata, lasciando futura migrazione a stack Laravel/Vue.",
+        "option_name": "WordPress (tema custom) + Headless booking (micro-app Vue) / plugin booking minimale"
+      },
+      {
+        "cons": [
+          "Overkill per solo booking; time-to-market e complessità aumentano",
+          "UX prenotazioni spesso “adattata” e meno mobile-first",
+          "Personalizzazioni sul motore disponibilità possono diventare costose/fragili"
+        ],
+        "pros": [
+          "E-commerce completo già pronto (pagamenti, spedizioni, magazzino)",
+          "Un unico backoffice per prodotti e clienti"
+        ],
+        "best_for": "Scenario in cui il barbiere vende anche prodotti online e vuoi un unico pannello per catalogo/ordini + prenotazioni (con forti compromessi sull’UX).",
+        "option_name": "PrestaShop + modulo prenotazioni (solo se già necessario e-commerce)"
+      }
+    ]
+  },
+  "ui_ux_design": {
+    "architecture": [
+      "Design system (Tailwind-first) con tokenizzazione: definire palette (brand/neutral/status), tipografia (scale mobile-first), spaziature (4/8pt), radius, shadow, component states (default/hover/focus/disabled/error) e standard di accessibilità (focus ring visibile, contrasto).",
+      "Layout patterns Blade: 2 shell principali — (1) Public/Booking Shell mobile-first con header minimale e progress indicator; (2) Admin Shell con sidebar/topbar, breadcrumb, e area contenuti responsive.",
+      "Component-driven UI in Blade: UI atomici (button, input, select, badge, alert), molecole (card servizio, slot pill, summary row), organismi (booking stepper, calendario semplice, table appointments) come Blade components riusabili + varianti via props/classi Tailwind.",
+      "User journey structure: percorso cliente lineare a step con persistenza stato (session/hidden inputs) e gestione errori/timeout; percorso admin orientato a “today view” (lista giornaliera) + azioni rapide (crea/modifica/cancella/blocca).",
+      "Form UX & validation layer: pattern unico per error summary + inline errors, input masking telefono, conferme distruttive (modal), e optimistic feedback (toast) dove sensato; prevenzione overbooking comunicata con messaggi chiari in caso di conflitto.",
+      "Content & messaging: microcopy coerente (CTA, empty states, loading), template email con tono brand; pagine di sistema (404/500) con CTA “Torna a Prenota”.",
+      "PWA baseline UI: “app-like” meta/theme-color, splash/manifest, e pattern di aggiornamento (banner “Nuova versione disponibile” opzionale) senza dipendenze offline sul flusso booking."
+    ],
+    "main_components": [
+      "Public Landing (mobile-first): hero con CTA “Prenota ora”, info rapide (indirizzo, orari, contatti), link map/chiama, banner promo opzionale.",
+      "Booking Stepper (3–4 step): progress indicator + back/save state; step 1 lista servizi (card con durata/prezzo), step 2 scelta data (calendario semplice), step 3 scelta ora (slot pills/grid), step 4 contatti + consenso + conferma.",
+      "Booking Summary (sticky on mobile): riepilogo servizio/data/ora/prezzo, regole (durata, cancellazione), CTA primaria contestuale.",
+      "States di sistema: skeleton/loading per slots, empty state “Nessuna disponibilità” con suggerimenti (cambia giorno/servizio), error state conflitto overbooking con retry.",
+      "Forms UI kit: Input con label, hint, error; telefono (mask), email opzionale; checkbox consenso; textarea note (opzionale).",
+      "Success/Confirmation page: dettagli appuntamento, istruzioni (arriva 5 min prima), azioni (aggiungi a calendario .ics link), contatti del negozio.",
+      "Admin Auth: login semplice con layout dedicato, gestione errori e reset password (se previsto).",
+      "Admin Dashboard ‘Oggi’: lista appuntamenti per fascia oraria, quick actions (segna completato/no-show opzionale), filtro per data.",
+      "Admin Appointment Detail + CRUD: form crea/modifica (servizio, data/ora, cliente), conferma cancellazione (modal) e feedback (toast).",
+      "Admin Calendar base (giorno/settimana): griglia semplice con appuntamenti e blocchi; navigazione prev/next; jump to today.",
+      "Admin Services CRUD: tabella + form (nome, durata, prezzo, attivo), validazioni e empty state.",
+      "Admin Availability Settings: orari settimanali (per giorno), buffer standard, anticipo minimo; UI a pattern “settings form” con salvataggio chiaro.",
+      "Admin Closures/Blackouts: lista chiusure straordinarie + aggiungi intervallo date/ore; blocca giornata/slot (minimo MVP).",
+      "Email templates: conferma cliente, notifica barbiere, aggiornamento/cancellazione; header brand + blocco riepilogo + CTA contatto.",
+      "PWA UI bits: install prompt guidance (solo se necessario), meta/manifest include, offline fallback page minimale (informativa)."
+    ],
+    "folder_structure": [
+      "resources/views/layouts/ (app-public.blade.php, app-booking.blade.php, app-admin.blade.php)",
+      "resources/views/pages/ (public/, booking/, admin/ per page templates Blade)",
+      "resources/views/components/ui/ (button, input, select, textarea, checkbox, radio, badge, alert, toast, modal, loader, empty-state)",
+      "resources/views/components/booking/ (stepper, service-card, date-picker-shell, slot-grid, booking-summary, contact-form, confirmation-panel)",
+      "resources/views/components/admin/ (sidebar, topbar, page-header, filters, appointments-table, appointment-form, calendar-week, settings-form, closures-list)",
+      "resources/views/partials/ (meta-pwa, seo, flash-messages, footer, nav-public, nav-admin, analytics)",
+      "resources/css/ (app.css, tailwind.css, components/ for extracted @layer components utilities)",
+      "resources/js/ (pwa/registration.js se necessario per service worker/manifest handling; eventuale Alpine helpers)",
+      "public/icons/ (pwa icons set), public/manifest.webmanifest",
+      "resources/views/emails/ (customer-confirmation, barber-notification, appointment-updated, appointment-cancelled)",
+      "resources/views/vendor/ (override notifiche/mail markdown se usato)",
+      "docs/design/ (design-tokens.md, component-inventory.md, booking-flow.md, admin-flow.md per handoff)"
+    ],
+    "implementation_steps": [
+      "Allineamento UX: definire regole booking che impattano la UI (grana slot, buffer, anticipo minimo, cancellazione) + mappa schermate MVP (cliente/admin) e criteri di successo (time-to-book, error rate).",
+      "Wireframe low-fi mobile-first: flusso prenotazione step-by-step con stati (loading/empty/error) + wireframe admin (today list, detail, settings).",
+      "Design system Tailwind: definire token (colori, type scale, spacing), component states e linee guida accessibilità; creare component inventory (UI atoms/molecules) per handoff.",
+      "Impostare Blade layout shells: app-booking e app-admin con navigazione, responsive grid, e slots per header/actions; aggiungere partial meta PWA/SEO.",
+      "Costruire UI kit Blade components: button, input, select, alert, modal, toast, loader, empty-state; standardizzare pattern di error summary e inline errors.",
+      "Implementare Booking Stepper UI (senza logica): pagine/partial per step, progress indicator, summary sticky; definire copy e micro-interazioni (disable CTA finché non valido).",
+      "Integrare validazioni e stati: collegare error handling server-side, messaggi per conflitto slot, skeleton per disponibilità, e pattern di retry; verificare a11y (focus management su step change e modals).",
+      "Costruire Admin UI: login, shell, dashboard ‘oggi’, table/list pattern, detail+form, services CRUD, settings/closures con pattern coerenti e empty states.",
+      "Email design: creare template Blade email con blocchi riusabili (header/footer, summary card), test su client principali; definire tono e contenuti legali minimi.",
+      "PWA baseline handoff: definire icone, theme color, manifest fields, offline fallback page, e checklist installabilità (iOS/Android).",
+      "QA UX su dispositivi reali: test con una mano (thumb reach), performance percepita, edge cases (no slot, chiusure, cambio step), e check contrast/focus; produrre punch list.",
+      "Handoff finale: documentare componenti, varianti e regole (component-inventory.md, booking-flow.md, admin-flow.md), e consegnare checklist di implementazione UI + criteri di accettazione per ogni schermata."
+    ]
+  },
+  "build_planner": {},
+  "selected_stack": "laravel",
+  "backend_integration": {
+    "architecture": [
+      "HTTP entrypoints: Web routes (Blade SSR) for customer booking + admin; optional JSON endpoints for availability lookups and async UI. Use route groups with middleware (web, auth, verified, throttling) and separate namespaces by domain (Booking/Admin).",
+      "Request/response flow: Route -> Controller (thin) -> Service layer (domain logic) -> Repositories/Eloquent models (data access) -> DB transaction/locking -> Domain events -> Notifications/Jobs -> Response (redirect/Blade view/JSON). Keep controllers focused on orchestration + input/output mapping.",
+      "Domain boundaries (modules): (1) Catalog (Services), (2) Availability (opening hours, closures, settings, slot generation), (3) Booking (appointments lifecycle + overbooking prevention), (4) Admin (CRUD + reporting views), (5) Notifications (email templates + delivery), (6) Audit/Logs (booking events, email logs).",
+      "Data model & integrity: Eloquent models for Service, Appointment, OpeningHour, Closure, Setting. Enforce uniqueness/overlap constraints at DB-level where possible (e.g., prevent overlapping appointments per resource) plus application-level checks. Use UTC storage with configured business timezone for slot generation/rendering.",
+      "Overbooking prevention: Compute candidate slot -> open DB transaction -> re-check conflicts with SELECT ... FOR UPDATE (or advisory locks) on the resource/day -> insert appointment -> commit. Return a deterministic conflict response (409 for API / redirect to conflict page for SSR).",
+      "Authentication/authorization: Admin authentication via Laravel session auth (Breeze/Jetstream or custom) and authorization via Policies/Gates (e.g., AppointmentPolicy, ServicePolicy, SettingsPolicy). Customer booking is unauthenticated in MVP; optionally protect self-service links via signed URLs or opaque tokens.",
+      "Validation boundary: FormRequest classes per action (CreateBookingRequest, UpdateAppointmentRequest, StoreServiceRequest, UpdateAvailabilitySettingsRequest, StoreClosureRequest). Centralize normalization (phone/email formatting) in request or DTOs.",
+      "Async processing: Queue-backed Jobs for sending emails (SendBookingConfirmationJob, NotifyBarberJob) with retries and failure handling; use queued Notifications/Mailables. Store email delivery attempts in a table for admin visibility/debugging.",
+      "External integrations: Mail transport (SMTP/Mailgun/Sendgrid) via Laravel Mail; optional calendar (.ics) generation as downloadable response; optional analytics/events via server-side logging. Keep integration adapters in a dedicated layer to swap providers.",
+      "Admin flows: Admin CRUD for services, appointments, opening hours, closures, settings. Provide admin actions for create/update/cancel; cancellations trigger events and notification jobs. Admin views pull from query services with pagination and date filtering.",
+      "Observability & safety: Structured logging around booking attempts, conflicts, and mail sends; rate limit booking endpoints; CSRF protection for web forms; use signed URLs for sensitive actions (cancel/reschedule) if enabled.",
+      "Configuration: Central settings (slot granularity, buffer minutes, min advance booking, business timezone) stored in settings table + cached config (Cache::remember) with invalidation on update."
+    ],
+    "main_components": [
+      "Models & tables: Service (duration_minutes, price, active), Appointment (service_id, start_at, end_at, customer_name, customer_phone, customer_email, notes, status), OpeningHour (weekday, start_time, end_time), Closure (start_at, end_at, reason), Setting (key/value), EmailLog (appointment_id, to, template, status, provider_id, error).",
+      "Availability engine: SlotGenerator (fixed granularity, buffer application, min-advance), resolvers for weekly opening hours + closures, conflict checker against existing appointments, returns available slots for a date range.",
+      "Booking workflow (customer): BookingDraft stored in session (service_id, date, time) + final CreateBooking that persists Appointment; deterministic conflict handling; optional idempotency token per submit.",
+      "Admin appointment management: list/day view + filters, create/edit/cancel, ability to add manual blocks via closures (MVP), detail view with customer/service/time and status.",
+      "Service catalog management: Admin CRUD for services with validation and soft-deactivation (active flag) to hide from booking.",
+      "Availability settings management: Admin UI/controller to maintain opening hours, buffer, slot granularity, min advance; cache invalidation after update.",
+      "Notifications system: Mailables/templates for customer confirmation + barber notification; queued jobs with retry; EmailLog persistence; event-driven triggers on appointment create/update/cancel.",
+      "Security & authorization: Session-based admin auth; policies for admin actions; throttling for booking submission; signed URLs/tokens for any customer self-service actions if introduced.",
+      "Utility outputs: ICS appointment file generation for confirmation page/email attachment or download link; standardized time formatting with business timezone.",
+      "Testing focus areas: unit tests for SlotGenerator edge cases (closures, buffer, end-of-day), feature tests for booking conflict (parallel requests), mail job dispatch and logging."
+    ],
+    "folder_structure": [
+      "app/Models/ (Service.php, Appointment.php, OpeningHour.php, Closure.php, Setting.php, EmailLog.php)",
+      "app/Http/Controllers/Booking/ (BookingWizardController.php, AvailabilityController.php)",
+      "app/Http/Controllers/Admin/ (DashboardController.php, AppointmentController.php, ServiceController.php, AvailabilitySettingsController.php, ClosureController.php)",
+      "app/Http/Requests/Booking/ (SelectServiceRequest.php, SelectDateRequest.php, SelectTimeRequest.php, CreateBookingRequest.php)",
+      "app/Http/Requests/Admin/ (StoreServiceRequest.php, UpdateServiceRequest.php, StoreAppointmentRequest.php, UpdateAppointmentRequest.php, UpdateAvailabilitySettingsRequest.php, StoreClosureRequest.php)",
+      "app/Services/Availability/ (AvailabilityService.php, SlotGenerator.php, OpeningHoursResolver.php, ClosuresResolver.php)",
+      "app/Services/Booking/ (BookingService.php, AppointmentConflictChecker.php, BookingDraftService.php)",
+      "app/Services/Admin/ (AppointmentQueryService.php, ServiceQueryService.php)",
+      "app/Policies/ (AppointmentPolicy.php, ServicePolicy.php, SettingPolicy.php, ClosurePolicy.php)",
+      "app/Events/ (AppointmentCreated.php, AppointmentUpdated.php, AppointmentCancelled.php)",
+      "app/Listeners/ (QueueBookingEmails.php, LogAppointmentEvent.php)",
+      "app/Jobs/ (SendCustomerConfirmationEmail.php, SendBarberNotificationEmail.php)",
+      "app/Mail/ (CustomerBookingConfirmation.php, BarberNewBookingNotification.php, AppointmentUpdatedMail.php, AppointmentCancelledMail.php)",
+      "app/Notifications/ (optional if using Notification channels)",
+      "app/Support/ (Money.php, Phone.php, TimeRange.php, IcsBuilder.php, SignedLink.php)",
+      "database/migrations/ (create_services_table.php, create_opening_hours_table.php, create_closures_table.php, create_settings_table.php, create_appointments_table.php, create_email_logs_table.php)",
+      "database/seeders/ (ServiceSeeder.php, OpeningHoursSeeder.php, AdminUserSeeder.php)",
+      "routes/web.php (public + booking + admin route groups)",
+      "routes/api.php (optional: /availability, /booking endpoints if used by async UI)",
+      "config/booking.php (slot_granularity, buffer_default, timezone, min_advance_minutes)"
+    ],
+    "implementation_steps": [
+      "Bootstrap Laravel 11 project and baseline config: set APP_TIMEZONE, create config/booking.php, choose DB, set queue driver (database) and mail provider envs.",
+      "Design and implement migrations + models with indexes/constraints: appointments indexed by start_at/end_at; add status enum/string; consider unique constraint on (start_at, resource_id) if single-chair MVP; create email_logs for observability.",
+      "Create admin authentication scaffolding (Laravel Breeze) and define admin middleware/guards; create initial AdminUserSeeder and secure /admin routes.",
+      "Implement core domain services: AvailabilityService + SlotGenerator + AppointmentConflictChecker; write unit tests for slot generation and conflict detection (buffer, closures, boundaries).",
+      "Implement transactional booking creation in BookingService: beginTransaction -> lock scope (e.g., existing appointments for day via FOR UPDATE) -> re-check conflicts -> create appointment -> commit; on conflict return typed exception mapped to 409/conflict page.",
+      "Build HTTP layer: Booking controllers for step flow (SSR) and optional JSON AvailabilityController; implement FormRequests for each step + final CreateBookingRequest; normalize phone/email inputs.",
+      "Implement admin CRUD controllers and views integration points: ServiceController CRUD, AppointmentController CRUD, AvailabilitySettingsController (opening hours + settings), ClosureController; apply policies and validation requests.",
+      "Add domain events (AppointmentCreated/Updated/Cancelled) and listeners that dispatch queued email jobs and write audit logs; ensure events fire only after successful DB commit (use afterCommit).",
+      "Implement email delivery: Mailables + Blade templates, queue jobs with retry/backoff, EmailLog writes on success/failure; add a simple admin page/filter to inspect email logs if needed for support.",
+      "Add rate limiting and security hardening: throttle booking submit and availability endpoints, ensure CSRF on web forms, add signed URL helper for any future self-service cancel/reschedule links.",
+      "Create feature tests: booking happy path, booking conflict path, admin CRUD authorization, email job dispatch, and concurrency test (two parallel booking attempts same slot).",
+      "Introduce caching for availability computation (short TTL per service/date) with invalidation when appointments/settings/closures change; verify cache does not bypass conflict re-check on final booking.",
+      "Deployment readiness: configure queues (worker/supervisor), mail credentials, logging channels, and basic monitoring; run seeders for initial services/opening hours; perform end-to-end QA on booking + admin flows with real timezone and daylight saving edge cases."
+    ]
+  },
+  "frontend_ui_builder": {
+    "architecture": [
+      "Rendering model: Laravel 11 monolite server-rendered con Blade + Tailwind; progressivo enhancement con Alpine.js solo per interazioni (modals, toast, stepper UX), senza SPA. Vite per build assets (CSS/JS) e versioning.",
+      "Presentation layers: (1) Public/Marketing (landing) SSR; (2) Booking flow SSR a step (wizard) con stato in sessione e/o query/hidden inputs; (3) Admin SSR con shell dedicata e CRUD forms. Layout separati per minimizzare duplicazioni e ottimizzare mobile-first.",
+      "Shared UI primitives: Design system Tailwind-first (token via tailwind.config), Blade components atomici e composizioni (ui/*, booking/*, admin/*). Varianti via props/class merging; pattern unificati per forms, error states, empty states, loading states.",
+      "Frontend state boundaries: stato “booking draft” confinato al flusso (session) + idempotency token per submit; stato admin confinato alle pagine admin (filtri in query string). Nessuno store globale; solo Alpine local state per UI (open/close, tabs, snackbars).",
+      "Validation & feedback: validazione server-side con redirect+old input+errors; componenti Blade per error summary + inline errors; flash messages normalizzate (success/error) rese come toast/banner; gestione conflitto overbooking come pagina/stato con retry.",
+      "PWA baseline: inclusione manifest + icone + meta theme-color su layout public/booking; service worker minimale (cache della shell asset compilati) e pagina fallback offline informativa (no booking offline).",
+      "Accessibility & responsiveness: mobile-first con header compatto, CTA sticky quando opportuno; focus ring e focus management per modals; componenti form con label/hint/aria-describedby standardizzati."
+    ],
+    "main_components": [
+      "Layout Public (mobile-first): header compatto, CTA Prenota, sezione info (indirizzo/orari/contatti), link mappa/telefono, footer con privacy.",
+      "Booking Wizard (3–4 step): Stepper/progress, navigazione back, persistenza draft; pagine: Seleziona servizio, Seleziona data, Seleziona ora (slot grid), Contatti, Conferma, Successo.",
+      "Booking Service List: card servizio con nome, durata, prezzo, badge “popolare” opzionale, stato selezionato; CTA “Continua”.",
+      "Date picker shell (MVP): calendario semplice (mese) o lista giorni prossimi; disabilita giorni non disponibili; loading state mentre calcola disponibilità.",
+      "Slot selector: griglia/pill per orari disponibili, stati (available/selected/disabled), skeleton loading, empty state “Nessuna disponibilità” con suggerimenti.",
+      "Booking Summary sticky: riepilogo sempre visibile su mobile (servizio/data/ora/prezzo), note regole (durata/buffer/cancellazione), CTA primaria contestuale.",
+      "Contact form: nome, telefono obbligatorio, email opzionale, note opzionali, consenso (se richiesto); pattern error summary + inline errors; submit con spinner/disabled.",
+      "Conflict/Overbooking UI: pagina/stato dedicato con messaggio chiaro, refresh slots, e azione “Scegli un altro orario”.",
+      "Admin Auth UI: login page, form standard, error handling, eventuale reset password view.",
+      "Admin Shell: sidebar/topbar responsive, breadcrumb/page header con actions, area contenuti; pattern table+filters per liste.",
+      "Admin Appointments: vista “Oggi” (lista per orario), index con filtri (data), detail con riepilogo cliente/servizio, azioni modifica/cancella, modal conferma azioni distruttive.",
+      "Admin Calendar base (giorno/settimana): griglia semplice con navigazione prev/next e jump to today; blocchi appuntamento cliccabili.",
+      "Admin Services CRUD: tabella servizi, form crea/modifica (nome, durata, prezzo, attivo), empty state con CTA “Aggiungi servizio”.",
+      "Admin Availability Settings: form orari settimanali, buffer standard, anticipo minimo; salvataggio con feedback (toast/banner).",
+      "Admin Closures/Blackouts: lista chiusure, aggiunta intervallo date/ore, rimozione; UI minima per “blocca giornata/slot”.",
+      "Email templates (Blade): base layout brand, summary card appuntamento, contenuti per cliente e barbiere (con fallback testo).",
+      "PWA baseline UI bits: include manifest/meta, offline fallback page, banner opzionale “Nuova versione disponibile” (solo se SW custom)."
+    ],
+    "folder_structure": [
+      "resources/views/layouts/",
+      "resources/views/layouts/public.blade.php",
+      "resources/views/layouts/booking.blade.php",
+      "resources/views/layouts/admin.blade.php",
+      "resources/views/pages/public/ (home, privacy, terms)",
+      "resources/views/pages/booking/ (service.blade.php, date.blade.php, time.blade.php, contact.blade.php, confirm.blade.php, success.blade.php, conflict.blade.php)",
+      "resources/views/pages/admin/ (auth/login.blade.php, dashboard.blade.php, appointments/index.blade.php, appointments/show.blade.php, appointments/form.blade.php, services/index.blade.php, services/form.blade.php, settings/availability.blade.php, settings/closures.blade.php)",
+      "resources/views/components/ui/ (button.blade.php, link.blade.php, input.blade.php, select.blade.php, textarea.blade.php, checkbox.blade.php, radio.blade.php, badge.blade.php, alert.blade.php, modal.blade.php, toast.blade.php, loader.blade.php, empty-state.blade.php, card.blade.php)",
+      "resources/views/components/booking/ (stepper.blade.php, service-card.blade.php, date-picker-shell.blade.php, slot-pill.blade.php, slot-grid.blade.php, summary-sticky.blade.php, contact-form.blade.php, rules-note.blade.php)",
+      "resources/views/components/admin/ (sidebar.blade.php, topbar.blade.php, page-header.blade.php, filters.blade.php, appointments-table.blade.php, calendar-week.blade.php, settings-form.blade.php, closures-list.blade.php)",
+      "resources/views/partials/ (meta.blade.php, meta-pwa.blade.php, nav-public.blade.php, nav-admin.blade.php, footer.blade.php, flash.blade.php, analytics.blade.php)",
+      "resources/views/emails/ (layouts/base.blade.php, components/summary-card.blade.php, customer-confirmation.blade.php, barber-notification.blade.php, appointment-updated.blade.php, appointment-cancelled.blade.php)",
+      "resources/css/app.css (include Tailwind layers + @layer components)",
+      "resources/js/app.js (Alpine bootstrap + UI helpers)",
+      "resources/js/pwa/sw.js (se custom) / resources/js/pwa/register-sw.js",
+      "public/manifest.webmanifest",
+      "public/icons/ (pwa icon set)",
+      "tailwind.config.js (tokens + component presets)",
+      "docs/ui/ (design-tokens.md, component-inventory.md, booking-flow.md, admin-flow.md)"
+    ],
+    "implementation_steps": [
+      "Impostare Tailwind + Vite e token minimi (colori/typography/radius/shadow) in tailwind.config; definire classi condivise in @layer components per ridurre ripetizioni.",
+      "Creare i 3 layout Blade (public/booking/admin) con partial comuni (meta, meta-pwa, flash) e struttura responsive; predisporre slot per titolo pagina e azioni.",
+      "Implementare UI primitives come Blade components in resources/views/components/ui (button/link/input/select/textarea/checkbox/alert/modal/toast/loader/empty-state/card) con API props coerenti (variant, size, disabled, error, hint).",
+      "Standardizzare pattern form: component ErrorSummary + Field wrapper (label/hint/error) e integrare con $errors e old(); aggiungere focus ring e aria-describedby.",
+      "Comporre Landing page (public) con CTA “Prenota ora”, sezione contatti, orari, mappa; verificare performance mobile (immagini ottimizzate) e SEO base (title/description).",
+      "Costruire Booking Wizard SSR: creare pagine per step e componenti booking (stepper, service-card, date-picker-shell, slot-grid, summary-sticky, contact-form); definire copy e stati (loading/empty/error).",
+      "Aggiungere progressive enhancement con Alpine: modal conferme, toast auto-dismiss, sticky summary behavior, gestione focus per modals; mantenere funzionale senza JS dove possibile.",
+      "Integrare stati di errore specifici UI: conflitto overbooking (pagina conflict), “nessuno slot” (empty-state), validazione contatti; assicurare messaggi chiari e CTA di recovery.",
+      "Costruire Admin UI: login + admin shell; implementare viste appointments (today/index/show/form) con componenti admin (filters, table, page-header) e modals per delete.",
+      "Implementare viste admin per servizi e impostazioni disponibilità/chiusure con pattern settings-form; assicurare coerenza con UI kit (stessi input/error states).",
+      "Realizzare template email Blade: base layout + summary-card; creare versioni per conferma cliente e notifica barbiere; testare rendering (HTML + plain text fallback).",
+      "Aggiungere PWA baseline: manifest.webmanifest, icone, meta theme-color nei layout public/booking; se previsto SW, aggiungere register + caching minimale asset; creare offline fallback page.",
+      "QA UI mobile-first: test su iOS/Android (thumb reach, sticky CTA), a11y (tab order, focus, contrast), edge cases (no slot, chiusura, conflitto).",
+      "Documentare in docs/ui: inventario componenti con props/varianti, mappe delle pagine e stati, regole di microcopy; preparare checklist di accettazione per ogni schermata."
+    ]
+  }
+}
