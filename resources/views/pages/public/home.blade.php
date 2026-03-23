@@ -8,7 +8,10 @@
                     <p class="text-xs uppercase tracking-[0.3em] text-muted-foreground">{{ $settings['shop_city'] }}</p>
                 </div>
             </div>
-            <a href="{{ route('booking.service') }}" class="btn-primary">Prenota ora</a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.login') }}" class="btn-secondary">Login admin</a>
+                <a href="{{ route('booking.service') }}" class="btn-primary">Prenota ora</a>
+            </div>
         </div>
     </header>
 
@@ -67,7 +70,7 @@
                     <div class="mt-4 space-y-2 text-sm">
                         <a href="{{ $phoneHref }}" class="block font-medium">{{ $settings['shop_phone'] }}</a>
                         <a href="mailto:{{ $settings['shop_email'] }}" class="block text-muted-foreground">{{ $settings['shop_email'] }}</a>
-                        <a href="{{ route('admin.dashboard') }}" class="inline-block pt-3 font-semibold text-primary">Anteprima admin</a>
+                        <a href="{{ route('admin.login') }}" class="inline-block pt-3 font-semibold text-primary">Login admin</a>
                     </div>
                 </div>
             </div>

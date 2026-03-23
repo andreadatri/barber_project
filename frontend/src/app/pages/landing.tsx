@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { getServices, getSiteConfig, type BookingService, type SiteConfig } from "../lib/api";
+import { AdminLoginForm } from "../components/admin-login-form";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "../components/ui/drawer";
 import {
   MapPin,
   Clock,
@@ -12,8 +20,10 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+  const navigate = useNavigate();
   const [services, setServices] = useState<BookingService[]>([]);
   const [site, setSite] = useState<SiteConfig | null>(null);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   useEffect(() => {
     getServices().then(setServices).catch(() => setServices([]));
@@ -50,6 +60,27 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Drawer open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+        <DrawerContent className="mx-auto w-full max-w-xl rounded-t-3xl">
+          <DrawerHeader className="px-6 pb-2 pt-6">
+            <DrawerTitle className="text-xl">Accesso Admin</DrawerTitle>
+            <DrawerDescription>
+              Inserisci le tue credenziali per accedere al pannello.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-6 pb-6">
+            <Card className="border-0 p-0 shadow-none">
+              <AdminLoginForm
+                onSuccess={() => {
+                  setIsLoginOpen(false);
+                  navigate("/admin");
+                }}
+              />
+            </Card>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
         <div className="container mx-auto max-w-5xl px-4 py-4">
           <div className="flex items-center justify-between">
@@ -57,9 +88,14 @@ export default function Landing() {
               <Scissors className="h-6 w-6 text-primary" />
               <span className="text-lg font-semibold">{shopName}</span>
             </div>
-            <Button asChild>
-              <Link to="/prenota">Prenota ora</Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={() => setIsLoginOpen(true)}>
+                Login admin
+              </Button>
+              <Button asChild>
+                <Link to="/prenota">Prenota ora</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -153,6 +189,13 @@ export default function Landing() {
                     </Button>
                     <Button variant="link" className="block h-auto p-0 text-sm text-primary" asChild>
                       <a href={`mailto:${shopEmail}`}>{shopEmail}</a>
+                    </Button>
+                    <Button
+                      variant="link"
+                      className="block h-auto p-0 text-sm text-primary"
+                      onClick={() => setIsLoginOpen(true)}
+                    >
+                      Login admin
                     </Button>
                   </div>
                 </div>
