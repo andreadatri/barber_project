@@ -48,14 +48,15 @@ class BookingApiController extends Controller
 
         $service = Service::query()->findOrFail($data['service_id']);
         $date = CarbonImmutable::createFromFormat('Y-m-d', $data['date'], config('booking.timezone'));
-        $slots = $this->availability->slotsForDate($service, $date);
+        $slots = $this->availability->slotStatusesForDate($service, $date);
 
         return response()->json([
             'data' => [
                 'date' => $date->format('Y-m-d'),
-                'slots' => $slots->map(fn (CarbonImmutable $slot) => [
-                    'time' => $slot->format('H:i'),
-                    'available' => true,
+                'slots' => $slots->map(fn (array $slot) => [
+                    'time' => $slot['time']->format('H:i'),
+                    'available' => $slot['available'],
+                    'reason' => $slot['reason'],
                 ])->values(),
             ],
         ]);

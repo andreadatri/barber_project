@@ -8,6 +8,12 @@ export interface BookingService {
   description: string;
 }
 
+export interface AvailabilitySlot {
+  time: string;
+  available: boolean;
+  reason?: string | null;
+}
+
 export interface SiteSettings {
   shop_name: string;
   shop_address: string;
@@ -120,7 +126,7 @@ export async function getAvailability(serviceId: number, date: string) {
   const response = await request<{
     data: {
       date: string;
-      slots: { time: string; available: boolean }[];
+      slots: AvailabilitySlot[];
     };
   }>(`/availability?service_id=${serviceId}&date=${date}`);
 

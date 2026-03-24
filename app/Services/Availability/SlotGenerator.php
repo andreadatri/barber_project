@@ -15,6 +15,7 @@ class SlotGenerator
         int $serviceDurationMinutes,
         int $granularityMinutes,
         int $minAdvanceMinutes,
+        bool $enforceMinAdvance = true,
     ): Collection {
         $start = CarbonImmutable::instance($windowStart instanceof CarbonImmutable ? $windowStart : $windowStart->copy())
             ->ceilMinutes($granularityMinutes);
@@ -26,8 +27,14 @@ class SlotGenerator
             return collect();
         }
 
-        return collect(CarbonPeriod::since($start)->minutes($granularityMinutes)->until($lastStart))
-            ->map(fn (CarbonInterface $slot) => CarbonImmutable::instance($slot))
+        $slots = collect(CarbonPeriod::since($start)->minutes($granularityMinutes)->until($lastStart))
+            ->map(fn (CarbonInterface $slot) => CarbonImmutable::instance($slot));
+
+        if (! $enforceMinAdvance) {
+            return $slots->values();
+        }
+
+        return $slots
             ->filter(fn (CarbonImmutable $slot) => $slot->greaterThanOrEqualTo($threshold))
             ->values();
     }

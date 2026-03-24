@@ -7,10 +7,19 @@ import { ArrowLeft, Clock } from "lucide-react";
 import { Skeleton } from "../../components/ui/skeleton";
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { cn } from "../../components/ui/utils";
-import { getAvailability } from "../../lib/api";
+import {
+  getAvailability,
+  type AvailabilitySlot,
+} from "../../lib/api";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../components/ui/tooltip";
 import {
   getBookingDate,
   getBookingService,
+  getBookingTime,
   setBookingTime,
 } from "../../lib/booking-storage";
 
@@ -24,11 +33,11 @@ const steps: Step[] = [
 
 export default function Step3Time() {
   const navigate = useNavigate();
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [slots, setSlots] = useState<{ time: string; available: boolean }[]>(
-    []
+  const [selectedTime, setSelectedTime] = useState<string | null>(() =>
+    getBookingTime()
   );
+  const [loading, setLoading] = useState(true);
+  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [service] = useState(() => getBookingService());
   const [dateIso] = useState(() => getBookingDate());
   const date = dateIso ? new Date(dateIso) : undefined;
@@ -47,6 +56,18 @@ export default function Step3Time() {
       .finally(() => setLoading(false));
   }, [bookingDate, navigate, service]);
 
+  useEffect(() => {
+    if (!selectedTime) {
+      return;
+    }
+
+    const selectedSlot = slots.find((slot) => slot.time === selectedTime);
+
+    if (!selectedSlot?.available) {
+      setSelectedTime(null);
+    }
+  }, [selectedTime, slots]);
+
   const handleNext = () => {
     if (!selectedTime) {
       return;
@@ -60,6 +81,53 @@ export default function Step3Time() {
     () => slots.some((slot) => slot.available),
     [slots]
   );
+
+  const morningSlots = useMemo(
+    () => slots.filter((slot) => parseInt(slot.time, 10) < 13),
+    [slots]
+  );
+
+  const afternoonSlots = useMemo(
+    () => slots.filter((slot) => parseInt(slot.time, 10) >= 13),
+    [slots]
+  );
+
+  const renderSlotButton = (slot: AvailabilitySlot) => {
+    const isSelected = selectedTime === slot.time;
+    const button = (
+      <Button
+        key={slot.time}
+        type="button"
+        variant={isSelected ? "default" : "outline"}
+        disabled={!slot.available}
+        onClick={() => slot.available && setSelectedTime(slot.time)}
+        className={cn(
+          "h-10 w-full",
+          !slot.available &&
+            "cursor-not-allowed border-dashed opacity-40 hover:bg-background hover:text-foreground",
+        )}
+      >
+        {slot.time}
+      </Button>
+    );
+
+    if (slot.available) {
+      return button;
+    }
+
+    return (
+      <Tooltip key={slot.time}>
+        <TooltipTrigger asChild>
+          <span className="block w-full" tabIndex={0}>
+            {button}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent sideOffset={8}>
+          {slot.reason ?? "Orario non disponibile"}
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -109,40 +177,31 @@ export default function Step3Time() {
                   </div>
                 </div>
               </div>
-            ) : !hasAvailableSlots ? (
-              <Alert>
-                <Clock className="h-4 w-4" />
-                <AlertDescription>
-                  Nessuna disponibilità per questa data. Per favore seleziona
-                  un'altra data.
-                </AlertDescription>
-              </Alert>
             ) : (
               <div className="bg-background rounded-lg border p-6">
+                {!hasAvailableSlots && (
+                  <Alert className="mb-6">
+                    <Clock className="h-4 w-4" />
+                    <AlertDescription>
+                      Nessuna disponibilità per questa data. Gli orari visibili
+                      qui sotto non sono prenotabili: seleziona un'altra data.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-sm font-semibold mb-3 text-muted-foreground">
                       Mattina
                     </h3>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                      {slots
-                        .filter((slot) => parseInt(slot.time, 10) < 13)
-                        .map((slot) => (
-                          <Button
-                            key={slot.time}
-                            variant={
-                              selectedTime === slot.time ? "default" : "outline"
-                            }
-                            disabled={!slot.available}
-                            onClick={() => setSelectedTime(slot.time)}
-                            className={cn(
-                              "h-10",
-                              !slot.available && "opacity-50 cursor-not-allowed"
-                            )}
-                          >
-                            {slot.time}
-                          </Button>
-                        ))}
+                      {morningSlots.length > 0 ? (
+                        morningSlots.map(renderSlotButton)
+                      ) : (
+                        <p className="col-span-full text-sm text-muted-foreground">
+                          Nessuno slot al mattino.
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -151,24 +210,13 @@ export default function Step3Time() {
                       Pomeriggio
                     </h3>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                      {slots
-                        .filter((slot) => parseInt(slot.time, 10) >= 13)
-                        .map((slot) => (
-                          <Button
-                            key={slot.time}
-                            variant={
-                              selectedTime === slot.time ? "default" : "outline"
-                            }
-                            disabled={!slot.available}
-                            onClick={() => setSelectedTime(slot.time)}
-                            className={cn(
-                              "h-10",
-                              !slot.available && "opacity-50 cursor-not-allowed"
-                            )}
-                          >
-                            {slot.time}
-                          </Button>
-                        ))}
+                      {afternoonSlots.length > 0 ? (
+                        afternoonSlots.map(renderSlotButton)
+                      ) : (
+                        <p className="col-span-full text-sm text-muted-foreground">
+                          Nessuno slot al pomeriggio.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
