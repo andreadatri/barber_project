@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Separator } from "../../components/ui/separator";
 import { CheckCircle2 } from "lucide-react";
 import { getAdminSettings, updateAdminSettings } from "../../lib/api";
-
 interface BusinessInfo {
   name: string;
   address: string;

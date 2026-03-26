@@ -34,7 +34,7 @@ class AdminSettingsController extends Controller
             ->route('admin.settings.general')
             ->with('success', 'Impostazioni aggiornate.');
     }
-
+    // TODO: add more settings sections (e.g. opening hours, services, etc.)
     private function defaults(): array
     {
         return [
@@ -43,7 +43,7 @@ class AdminSettingsController extends Controller
             'shop_city' => 'Milano',
             'shop_postal_code' => '20100',
             'shop_phone' => '+39 333 123 4567',
-            'shop_email' => 'info@ilbarbiere.it',
+            'shop_email' => 'info@essenzadelbarbiere.it',
             'shop_vat_number' => 'IT12345678901',
         ];
     }
