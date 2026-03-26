@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { Skeleton } from "../components/ui/skeleton";
 import { getServices, getSiteConfig, type BookingService, type SiteConfig } from "../lib/api";
 import { AdminLoginForm } from "../components/admin-login-form";
 import {
@@ -24,10 +25,17 @@ export default function Landing() {
   const [services, setServices] = useState<BookingService[]>([]);
   const [site, setSite] = useState<SiteConfig | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getServices().then(setServices).catch(() => setServices([]));
-    getSiteConfig().then(setSite).catch(() => setSite(null));
+    Promise.all([
+      getServices().catch(() => [] as BookingService[]),
+      getSiteConfig().catch(() => null),
+    ]).then(([fetchedServices, fetchedSite]) => {
+      setServices(fetchedServices);
+      setSite(fetchedSite);
+      setIsLoading(false);
+    });
   }, []);
 
   const phoneHref = useMemo(() => {
@@ -129,17 +137,30 @@ export default function Landing() {
 
       <section className="py-12 lg:py-16">
         <div className="container mx-auto max-w-5xl px-4">
-          {services.length > 0 && (
+          {isLoading ? (
             <div className="mb-6 grid gap-6 md:grid-cols-3">
-              {services.slice(0, 3).map((service) => (
-                <Card key={service.id} className="p-6">
-                  <h3 className="font-semibold">{service.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {service.duration} min • €{service.price.toFixed(2)}
-                  </p>
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="p-6">
+                  <div className="space-y-2">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
                 </Card>
               ))}
             </div>
+          ) : (
+            services.length > 0 && (
+              <div className="mb-6 grid gap-6 md:grid-cols-3">
+                {services.slice(0, 3).map((service) => (
+                  <Card key={service.id} className="p-6">
+                    <h3 className="font-semibold">{service.name}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {service.duration} min • €{service.price.toFixed(2)}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            )
           )}
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -150,7 +171,11 @@ export default function Landing() {
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-semibold">Indirizzo</h3>
-                  <p className="text-sm text-muted-foreground">{shopAddress}</p>
+                  {isLoading ? (
+                    <Skeleton className="h-4 w-48" />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{shopAddress}</p>
+                  )}
                   <Button variant="link" className="h-auto p-0 text-primary" asChild>
                     <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer">
                       Visualizza mappa
@@ -167,11 +192,19 @@ export default function Landing() {
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-semibold">Orari</h3>
-                  <div className="space-y-0.5 text-sm text-muted-foreground">
-                    {groupedHours.map((row) => (
-                      <p key={row}>{row}</p>
-                    ))}
-                  </div>
+                  {isLoading ? (
+                    <div className="space-y-1">
+                      {[...Array(3)].map((_, i) => (
+                        <Skeleton key={i} className="h-4 w-40" />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-0.5 text-sm text-muted-foreground">
+                      {groupedHours.map((row) => (
+                        <p key={row}>{row}</p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
@@ -183,21 +216,28 @@ export default function Landing() {
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-semibold">Contatti</h3>
-                  <div className="space-y-1">
-                    <Button variant="link" className="h-auto p-0 text-sm text-primary" asChild>
-                      <a href={phoneHref}>{shopPhone}</a>
-                    </Button>
-                    <Button variant="link" className="block h-auto p-0 text-sm text-primary" asChild>
-                      <a href={`mailto:${shopEmail}`}>{shopEmail}</a>
-                    </Button>
-                    <Button
-                      variant="link"
-                      className="block h-auto p-0 text-sm text-primary"
-                      onClick={() => setIsLoginOpen(true)}
-                    >
-                      Login admin
-                    </Button>
-                  </div>
+                  {isLoading ? (
+                    <div className="space-y-1">
+                      <Skeleton className="h-4 w-36" />
+                      <Skeleton className="h-4 w-40" />
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <Button variant="link" className="h-auto p-0 text-sm text-primary" asChild>
+                        <a href={phoneHref}>{shopPhone}</a>
+                      </Button>
+                      <Button variant="link" className="block h-auto p-0 text-sm text-primary" asChild>
+                        <a href={`mailto:${shopEmail}`}>{shopEmail}</a>
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="block h-auto p-0 text-sm text-primary"
+                        onClick={() => setIsLoginOpen(true)}
+                      >
+                        Login admin
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
