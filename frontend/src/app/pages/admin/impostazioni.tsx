@@ -20,7 +20,7 @@ interface BusinessInfo {
 }
 
 const defaults: BusinessInfo = {
-  name: "Il Barbiere",
+  name: "essenza del barbiere",
   address: "Via Roma 123",
   city: "Milano",
   cap: "20100",

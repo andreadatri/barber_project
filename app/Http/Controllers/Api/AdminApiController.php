@@ -85,7 +85,7 @@ class AdminApiController extends Controller
     private function settingDefaults(): array
     {
         return [
-            'shop_name' => 'Il Barbiere',
+            'shop_name' => 'Essenza del Barbiere',
             'shop_address' => 'Via Roma 123',
             'shop_city' => 'Milano',
             'shop_postal_code' => '20100',

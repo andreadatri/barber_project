@@ -38,7 +38,7 @@ class AdminSettingsController extends Controller
     private function defaults(): array
     {
         return [
-            'shop_name' => 'Il Barbiere',
+            'shop_name' => 'Essenza del Barbiere',
             'shop_address' => 'Via Roma 123',
             'shop_city' => 'Milano',
             'shop_postal_code' => '20100',

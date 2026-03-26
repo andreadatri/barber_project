@@ -47,7 +47,7 @@ export default function BookingSuccess() {
 
   const startAt = new Date(confirmation.start_at);
   const bookingId = `BK${confirmation.id}`;
-  const shopName = site?.settings.shop_name ?? "Il Barbiere";
+  const shopName = site?.settings.shop_name ?? "Essenza del Barbiere";
   const shopAddress = site
     ? `${site.settings.shop_address}, ${site.settings.shop_postal_code} ${site.settings.shop_city}`
     : "Via Roma 123, 20100 Milano (MI)";

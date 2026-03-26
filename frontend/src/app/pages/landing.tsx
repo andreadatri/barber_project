@@ -51,12 +51,12 @@ export default function Landing() {
     return hours.map((hour) => `${labels[hour.weekday]}: ${hour.start_time} - ${hour.end_time}`);
   }, [site]);
 
-  const shopName = site?.settings.shop_name ?? "Il Barbiere";
-  const shopAddress = site
+  const shopName = site?.settings?.shop_name ?? "Essenza del Barbiere";
+  const shopAddress = site?.settings
     ? `${site.settings.shop_address}, ${site.settings.shop_postal_code} ${site.settings.shop_city}`
-    : "Via Roma 123, 20100 Milano (MI)";
-  const shopPhone = site?.settings.shop_phone ?? "+39 333 123 4567";
-  const shopEmail = site?.settings.shop_email ?? "info@ilbarbiere.it";
+    : "Via Roma 100, 20100 Milano (MI)";
+  const shopPhone = site?.settings?.shop_phone ?? "+39 333 123 4567";
+  const shopEmail = site?.settings?.shop_email ?? "info@ilbarbiere.it";
 
   return (
     <div className="min-h-screen bg-background">
@@ -217,7 +217,7 @@ export default function Landing() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Mappa Il Barbiere"
+              title="Mappa Essenza del Barbiere"
             />
           </div>
         </div>

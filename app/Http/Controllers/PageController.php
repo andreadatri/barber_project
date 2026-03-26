@@ -79,7 +79,7 @@ class PageController extends Controller
     private function shopDefaults(): array
     {
         return [
-            'shop_name' => 'Il Barbiere',
+            'shop_name' => 'Essenza del Barbiere',
             'shop_address' => 'Via Roma 123',
             'shop_city' => 'Milano',
             'shop_postal_code' => '20100',
