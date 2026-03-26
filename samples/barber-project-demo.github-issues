@@ -2,17 +2,29 @@
   {
     "kind": 1,
     "language": "markdown",
+<<<<<<< HEAD
     "value": "# AI Fix Demo\n\nNotebook di test per un flusso semplice:\n1. introduci un piccolo bug nel codice\n2. apri una issue su GitHub con una label dedicata\n3. il notebook trova la issue\n4. usi Copilot/Agent per applicare il fix nel file corretto"
+=======
+    "value": "# AI Fix Demo\n\nNotebook di test per questo flusso:\n1. introduci un piccolo bug nel codice\n2. apri una issue con label dedicata\n3. il notebook trova la issue\n4. copi il prompt finale in Copilot Chat o Agent per applicare il fix"
+>>>>>>> main
   },
   {
     "kind": 2,
     "language": "github-issues",
+<<<<<<< HEAD
     "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo\n$appPath=frontend/src/app/App.tsx"
+=======
+    "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo"
+>>>>>>> main
   },
   {
     "kind": 1,
     "language": "markdown",
+<<<<<<< HEAD
     "value": "## Issue da creare\n\nCrea una issue con label `ai-fix-demo`.\n\nEsempio titolo:\n`Bug demo: App non monta correttamente il router`\n\nEsempio corpo:\n`Inserito un piccolo errore di test in frontend/src/app/App.tsx. Correggere il problema mantenendo il comportamento attuale dell'app.`"
+=======
+    "value": "## Issue da creare\n\nTitolo suggerito:\n`Bug demo: App non monta correttamente il router`\n\nCorpo suggerito:\n`Inserito un piccolo errore di test per verificare il flusso AI.`\n\nTemplate consigliato per il body della issue:\n\n```text\nDescrizione:\nErrore introdotto per test AI.\n\nFile interessato: frontend/src/app/App.tsx\nObiettivo: correggere il bug senza cambiare il comportamento previsto\n```"
+>>>>>>> main
   },
   {
     "kind": 2,
@@ -23,10 +35,24 @@
     "kind": 2,
     "language": "github-issues",
     "value": "$repo $issues $open $demoLabel sort:created-desc"
+<<<<<<< HEAD
+=======
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $issues $open $demoLabel author:@me"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $issues $open $demoLabel \"File interessato:\""
+>>>>>>> main
   },
   {
     "kind": 1,
     "language": "markdown",
+<<<<<<< HEAD
     "value": "## Varianti utili\n\nQueste celle ti aiutano a stringere il risultato per autore o testo."
   },
   {
@@ -43,5 +69,8 @@
     "kind": 1,
     "language": "markdown",
     "value": "## Prompt finale per AI\n\nIl notebook non puo correggere il codice automaticamente dentro la cella: l'estensione supporta query e rendering, non editing AI diretto. Pero puoi usare subito questo prompt in Copilot Chat o Agent dopo aver trovato la issue:\n\n```text\nApri l'issue trovata con label ai-fix-demo e correggi il bug descritto nel file frontend/src/app/App.tsx.\n\nVincoli:\n- modifica solo il minimo necessario\n- non cambiare il comportamento atteso dell'app oltre al fix\n- spiega in 1-2 frasi la causa del problema\n- mostra il diff finale\n```\n\nSe vuoi un test ancora piu guidato, nel testo della issue aggiungi anche:\n`File interessato: frontend/src/app/App.tsx`"
+=======
+    "value": "## Prompt Finale\n\nCopia questo prompt in Copilot Chat o Agent:\n\nApri l'issue trovata con label `ai-fix-demo`, leggi il campo `File interessato` nel testo della issue e correggi il bug descritto.\n\nVincoli:\n- modifica solo il minimo necessario\n- non cambiare il comportamento atteso dell'app oltre al fix\n- spiega in 1-2 frasi la causa del problema\n- mostra il diff finale"
+>>>>>>> main
   }
 ]
