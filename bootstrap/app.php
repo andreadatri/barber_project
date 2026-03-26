@@ -7,7 +7,9 @@ use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -34,7 +36,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->report(function (ControlledNightwatchException $exception): void {
             Log::error('Controlled Nightwatch exception captured', [
                 'message' => $exception->getMessage(),
-                'status' => $exception->getStatusCode(),
+                'class' => $exception::class,
             ]);
+        });
+
+        $exceptions->render(function (ControlledNightwatchException $exception, Request $request): Response {
+            return response($exception->getMessage(), 500)
+                ->header('X-Nightwatch-Controlled-Error', '1');
         });
     })->create();

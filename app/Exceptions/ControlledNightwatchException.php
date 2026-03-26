@@ -2,12 +2,12 @@
 
 namespace App\Exceptions;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use RuntimeException;
 
-class ControlledNightwatchException extends HttpException
+class ControlledNightwatchException extends RuntimeException
 {
-    public function __construct(string $message = 'Controlled Nightwatch test exception')
+    public function __construct(string $message = 'NIGHTWATCH CONTROLLED ERROR')
     {
-        parent::__construct(500, $message);
+        parent::__construct($message);
     }
 }
