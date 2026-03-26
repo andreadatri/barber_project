@@ -9,6 +9,7 @@ import {
   X,
   LogOut,
   Clock,
+  Shield,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "./ui/utils";
@@ -38,6 +39,7 @@ const navigation = [
     href: "/admin/disponibilita",
     icon: Clock,
   },
+  { name: "Sicurezza", href: "/admin/sicurezza", icon: Shield },
   { name: "Impostazioni", href: "/admin/impostazioni", icon: Settings },
 ];
 

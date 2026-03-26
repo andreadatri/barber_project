@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Concerns\PasswordValidationRules;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class AdminApiController extends Controller
 {
+    use PasswordValidationRules;
+
     public function settings(): JsonResponse
     {
         return response()->json([
@@ -42,12 +47,34 @@ class AdminApiController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'is_admin' => (bool) $user->is_admin,
-            ],
+            'data' => $this->mapUser($user),
+        ]);
+    }
+
+    public function updateSecurity(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => ['nullable', 'string', Password::default(), 'confirmed'],
+        ]);
+
+        $user->forceFill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if (! empty($validated['password'])) {
+            $user->password = $validated['password'];
+        }
+
+        $user->save();
+
+        return response()->json([
+            'data' => $this->mapUser($user->fresh()),
+            'message' => 'Credenziali aggiornate.',
         ]);
     }
 
@@ -92,6 +119,16 @@ class AdminApiController extends Controller
             'shop_phone' => '+39 333 123 4567',
             'shop_email' => 'info@ilbarbiere.it',
             'shop_vat_number' => 'IT12345678901',
+        ];
+    }
+
+    private function mapUser($user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'is_admin' => (bool) $user->is_admin,
         ];
     }
 

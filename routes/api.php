@@ -12,6 +12,7 @@ Route::post('/bookings', [BookingApiController::class, 'store']);
 
 Route::prefix('admin')->middleware(['web', 'auth', 'admin'])->group(function () {
     Route::get('/me', [AdminApiController::class, 'me']);
+    Route::put('/security', [AdminApiController::class, 'updateSecurity']);
     Route::get('/appointments', [AdminApiController::class, 'appointments']);
     Route::patch('/appointments/{appointment}', [AdminApiController::class, 'updateAppointment']);
     Route::get('/settings', [AdminApiController::class, 'settings']);

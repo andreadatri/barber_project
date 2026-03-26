@@ -78,6 +78,13 @@ export interface AdminAppointment {
   };
 }
 
+export interface AdminProfile {
+  id: number;
+  name: string;
+  email: string;
+  is_admin: boolean;
+}
+
 function getCsrfToken() {
   return (
     document
@@ -180,6 +187,25 @@ export async function updateAdminSettings(
   payload: SiteSettings
 ): Promise<SiteSettings> {
   const response = await request<{ data: SiteSettings }>("/admin/settings", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+
+  return response.data;
+}
+
+export async function getAdminProfile(): Promise<AdminProfile> {
+  const response = await request<{ data: AdminProfile }>("/admin/me");
+  return response.data;
+}
+
+export async function updateAdminSecurity(payload: {
+  name: string;
+  email: string;
+  password?: string;
+  password_confirmation?: string;
+}): Promise<AdminProfile> {
+  const response = await request<{ data: AdminProfile }>("/admin/security", {
     method: "PUT",
     body: JSON.stringify(payload),
   });

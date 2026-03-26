@@ -17,6 +17,7 @@ import AdminServizi from "./pages/admin/servizi";
 import AdminAppuntamenti from "./pages/admin/appuntamenti";
 import AdminDisponibilita from "./pages/admin/disponibilita";
 import AdminImpostazioni from "./pages/admin/impostazioni";
+import AdminSicurezza from "./pages/admin/sicurezza";
 
 // Simple pages
 function NotFound() {
@@ -124,6 +125,10 @@ export const router = createBrowserRouter([
   {
     path: "/admin/impostazioni",
     Component: AdminImpostazioni,
+  },
+  {
+    path: "/admin/sicurezza",
+    Component: AdminSicurezza,
   },
   {
     path: "*",
