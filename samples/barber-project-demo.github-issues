@@ -1,0 +1,62 @@
+[ 
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Barber Project Demo\n\nNotebook di test per verificare le potenzialita di GitHub Issue Notebook con il repository `andreadatri/barber_project`."
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo=repo:andreadatri/barber_project\n$open=is:open\n$issues=is:issue\n$prs=is:pr"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Query base\n\nLe celle sotto servono per verificare risultati, rendering e riuso delle variabili."
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $open"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $issues $open"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $prs $open"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Filtri utili\n\nQueste celle mostrano come combinare stato, autore e label."
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $open author:@me"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $open assignee:@me"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo label:bug OR $repo label:enhancement"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Prova libera\n\nModifica questa cella per fare i tuoi test: milestone, labels, autori o PR review."
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo is:pr review-requested:@me"
+  }
+]
