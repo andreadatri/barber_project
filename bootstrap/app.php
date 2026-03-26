@@ -1,12 +1,16 @@
 <?php
 
+use App\Exceptions\ControlledNightwatchException;
+use App\Exceptions\RouteNotFoundException;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ThrowRouteNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(ThrowRouteNotFoundException::class);
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
@@ -29,5 +35,20 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (ControlledNightwatchException $exception): void {
+            Log::error('Controlled Nightwatch exception captured', [
+                'message' => $exception->getMessage(),
+                'status' => $exception->getStatusCode(),
+            ]);
+        });
+
+        $exceptions->stopIgnoring(RouteNotFoundException::class);
+
+        $exceptions->report(function (RouteNotFoundException $exception): void {
+            Log::warning('Route not found exception captured', [
+                'message' => $exception->getMessage(),
+                'status' => $exception->getStatusCode(),
+                'previous' => $exception->getPrevious()?->getMessage(),
+            ]);
+        });
     })->create();
