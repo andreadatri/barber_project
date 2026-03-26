@@ -12,8 +12,16 @@
     "kind": 2,
     "language": "github-issues",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo\n$appPath=frontend/src/app/App.tsx"
 =======
+=======
+    "value": ""
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+>>>>>>> main
     "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo"
 >>>>>>> main
   },
