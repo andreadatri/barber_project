@@ -1,62 +1,47 @@
-[ 
+[
   {
     "kind": 1,
     "language": "markdown",
-    "value": "# Barber Project Demo\n\nNotebook di test per verificare le potenzialita di GitHub Issue Notebook con il repository `andreadatri/barber_project`."
+    "value": "# AI Fix Demo\n\nNotebook di test per un flusso semplice:\n1. introduci un piccolo bug nel codice\n2. apri una issue su GitHub con una label dedicata\n3. il notebook trova la issue\n4. usi Copilot/Agent per applicare il fix nel file corretto"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo=repo:andreadatri/barber_project\n$open=is:open\n$issues=is:issue\n$prs=is:pr"
-  },
-  {
-    "kind": 1,
-    "language": "markdown",
-    "value": "## Query base\n\nLe celle sotto servono per verificare risultati, rendering e riuso delle variabili."
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $open"
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $issues $open"
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $prs $open"
+    "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo\n$appPath=frontend/src/app/App.tsx"
   },
   {
     "kind": 1,
     "language": "markdown",
-    "value": "## Filtri utili\n\nQueste celle mostrano come combinare stato, autore e label."
+    "value": "## Issue da creare\n\nCrea una issue con label `ai-fix-demo`.\n\nEsempio titolo:\n`Bug demo: App non monta correttamente il router`\n\nEsempio corpo:\n`Inserito un piccolo errore di test in frontend/src/app/App.tsx. Correggere il problema mantenendo il comportamento attuale dell'app.`"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo $open author:@me"
+    "value": "$repo $issues $open $demoLabel"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo $open assignee:@me"
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo label:bug OR $repo label:enhancement"
+    "value": "$repo $issues $open $demoLabel sort:created-desc"
   },
   {
     "kind": 1,
     "language": "markdown",
-    "value": "## Prova libera\n\nModifica questa cella per fare i tuoi test: milestone, labels, autori o PR review."
+    "value": "## Varianti utili\n\nQueste celle ti aiutano a stringere il risultato per autore o testo."
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo is:pr review-requested:@me"
+    "value": "$repo $issues $open $demoLabel author:@me"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $issues $open $demoLabel \"App.tsx\""
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Prompt finale per AI\n\nIl notebook non puo correggere il codice automaticamente dentro la cella: l'estensione supporta query e rendering, non editing AI diretto. Pero puoi usare subito questo prompt in Copilot Chat o Agent dopo aver trovato la issue:\n\n```text\nApri l'issue trovata con label ai-fix-demo e correggi il bug descritto nel file frontend/src/app/App.tsx.\n\nVincoli:\n- modifica solo il minimo necessario\n- non cambiare il comportamento atteso dell'app oltre al fix\n- spiega in 1-2 frasi la causa del problema\n- mostra il diff finale\n```\n\nSe vuoi un test ancora piu guidato, nel testo della issue aggiungi anche:\n`File interessato: frontend/src/app/App.tsx`"
   }
 ]
