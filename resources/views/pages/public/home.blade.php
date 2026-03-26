@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.login') }}" class="btn-secondary">Login admin</a>
+                <a href="{{ route('admin.login') }}" class="btn-secondary">Login</a>
                 <a href="{{ route('booking.service') }}" class="btn-primary">Prenota ora</a>
             </div>
         </div>
