@@ -7,6 +7,11 @@
   {
     "kind": 2,
     "language": "github-issues",
+    "value": ""
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
     "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo"
   },
   {
