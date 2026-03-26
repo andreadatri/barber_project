@@ -59,7 +59,7 @@ export default function Landing() {
             </div>
             <div className="flex items-center gap-3">
               <Button variant="outline" asChild>
-                <Link to="/nightwatch/controlled-error" reloadDocument>Login</Link>
+                <Link to="/admin/login" reloadDocument>Login</Link>
               </Button>
               <Button asChild>
                 <Link to="/prenota">Prenota ora</Link>
