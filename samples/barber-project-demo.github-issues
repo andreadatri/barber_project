@@ -1,62 +1,42 @@
-[ 
+[
   {
     "kind": 1,
     "language": "markdown",
-    "value": "# Barber Project Demo\n\nNotebook di test per verificare le potenzialita di GitHub Issue Notebook con il repository `andreadatri/barber_project`."
+    "value": "# AI Fix Demo\n\nNotebook di test per questo flusso:\n1. introduci un piccolo bug nel codice\n2. apri una issue con label dedicata\n3. il notebook trova la issue\n4. copi il prompt finale in Copilot Chat o Agent per applicare il fix"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo=repo:andreadatri/barber_project\n$open=is:open\n$issues=is:issue\n$prs=is:pr"
-  },
-  {
-    "kind": 1,
-    "language": "markdown",
-    "value": "## Query base\n\nLe celle sotto servono per verificare risultati, rendering e riuso delle variabili."
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $open"
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $issues $open"
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo $prs $open"
+    "value": "$repo=repo:andreadatri/barber_project\n$issues=is:issue\n$open=is:open\n$demoLabel=label:ai-fix-demo"
   },
   {
     "kind": 1,
     "language": "markdown",
-    "value": "## Filtri utili\n\nQueste celle mostrano come combinare stato, autore e label."
+    "value": "## Issue da creare\n\nTitolo suggerito:\n`Bug demo: App non monta correttamente il router`\n\nCorpo suggerito:\n`Inserito un piccolo errore di test per verificare il flusso AI.`\n\nTemplate consigliato per il body della issue:\n\n```text\nDescrizione:\nErrore introdotto per test AI.\n\nFile interessato: frontend/src/app/App.tsx\nObiettivo: correggere il bug senza cambiare il comportamento previsto\n```"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo $open author:@me"
+    "value": "$repo $issues $open $demoLabel"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo $open assignee:@me"
+    "value": "$repo $issues $open $demoLabel sort:created-desc"
   },
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repo label:bug OR $repo label:enhancement"
+    "value": "$repo $issues $open $demoLabel author:@me"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repo $issues $open $demoLabel \"File interessato:\""
   },
   {
     "kind": 1,
     "language": "markdown",
-    "value": "## Prova libera\n\nModifica questa cella per fare i tuoi test: milestone, labels, autori o PR review."
-  },
-  {
-    "kind": 2,
-    "language": "github-issues",
-    "value": "$repo is:pr review-requested:@me"
+    "value": "## Prompt Finale\n\nCopia questo prompt in Copilot Chat o Agent:\n\nApri l'issue trovata con label `ai-fix-demo`, leggi il campo `File interessato` nel testo della issue e correggi il bug descritto.\n\nVincoli:\n- modifica solo il minimo necessario\n- non cambiare il comportamento atteso dell'app oltre al fix\n- spiega in 1-2 frasi la causa del problema\n- mostra il diff finale"
   }
 ]
