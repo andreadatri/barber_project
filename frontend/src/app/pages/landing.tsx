@@ -73,7 +73,7 @@ export default function Landing() {
         <div className="container mx-auto max-w-5xl px-4">
           <div className="space-y-6 text-center">
             <h1 className="text-4xl font-bold lg:text-5xl">
-              Benvenuto da {shopName}
+              Benvenuto/a da {shopName}
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
               Taglio, barba e stile. Prenota il tuo appuntamento in pochi secondi.
